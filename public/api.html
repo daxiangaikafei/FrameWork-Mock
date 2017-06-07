@@ -1,0 +1,361 @@
+{{include './header/index'}}
+
+    <style>
+        table{
+            border-right:1px #cecece solid;
+            border-bottom:1px #cecece solid;
+            margin-top: 10px;
+        }
+        table th,table td{
+            border-left:1px #cecece solid;
+            border-top:1px #cecece solid;
+            padding: 5px;
+            text-align:left;
+            padding-left: 10px; 
+        }
+        td.center{
+            text-align: center;
+        }
+        button{
+            margin-top: 10px;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        input{
+            padding: 2px;
+            height: 18px;
+            line-height: 18px;
+            margin: 0px 10px;
+            width: 200px;
+        }
+    </style>
+    
+        <h1>{{title}}</h1><hr/>
+        请输入您要搜索的接口名称: <input type="text" id='apiSearchName'/><button id="searchBtn">搜索API</button><button id='addApi'>添加API</button>　<br/>
+        请输入您要绑定的调试域名: <input type="text" id='authDomain' value="{{authDomain}}"/><button id="setBtn" lang="{{projectId}}">设置</button>（调试时请设置对应的host,浏览器无需设置跨域模式）　<br/>　<hr/>
+        <table cellspacing="0" cellpadding="0">
+            <thead>
+                <th style="width:100px;">api名称</th>
+                <th style="width:100px;">请求方式</th>
+                <th style="width:200px;">描述</th>
+                <th style="width:200px;">路由地址</th>
+                <th style="width:100px;">操作</th>
+            </thead>
+            <tbody id='tbodys'>
+                {{if !APIList.length }}
+                    <td colspan="4" class="center">没有找到相关数据！</td>
+                {{/if}}
+                {{each APIList as list i}}
+                <tr>
+                    <td><a href='/{{list.projectKey}}/{{list.apiKey}}'>{{list.apiName}}</a></td>
+                    <td>{{list.apiMethod == 2 ? 'POST' : 'GET'}}</td>
+                    <td>{{list.apiDesc}}</td>
+                    <td>/{{list.projectKey}}/{{list.apiKey}}</td>
+                    <td><a href='javascript:void(0)' class="modify-api" lang={{list.aid}}>修改</a> <a href='javascript:void(0)' class="delete-api" lang={{list.aid}}>删除</a></td>
+                </tr>
+                {{/each}}
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+        <input type="hidden" value="{{projectId}}" id="projectId"/>
+        <input type="hidden" value="{{projectName}}" id="projectName"/>
+        
+        <script>
+            $('body').off('click');
+            $('body').on('click',function(e){
+
+                    if(e.target.id == 'addApi'){
+                        business.removeValue()
+                        business.addApi()
+                    }
+                    else if(e.target.className == 'modify-api'){
+                        business.removeValue()
+                        business.getApi(e.target.getAttribute('lang'))
+                    }
+                    else if(e.target.className == 'delete-api'){
+                        business.removeValue()
+                        business.confirmDelete(e.target.getAttribute('lang'))
+                    }
+                    else if(e.target.id == 'searchBtn'){
+                        business.removeValue()
+                        business.initApiList()
+                    }
+                    else if(e.target.id == 'setBtn'){
+                        business.updateDoMain(e.target.getAttribute('lang'))
+                    }
+                        
+            });
+
+            var apiId = 0 ,
+                business = business || {
+                addApi:function(){
+                    swal({
+                        title: "新增API",
+                        type: 'input',
+                        inputPlaceholder:'API名称',
+                        showCancelButton: true,
+                        closeOnConfirm: false,
+                        animation: "slide-from-top"
+                    }, function(inputValue){
+                        inputValue &&
+                        business.addApiPost();
+                    });
+                },
+                addApiPost:function(){
+
+                    if(!$('#apiName').val().length){
+                        
+                        swal.showInputError("api名称 不能为空!");
+                        $('#apiName').focus();
+                        return;
+                    }
+                    else if(!$('#apiDesc').val().length){
+                        
+                        swal.showInputError("API描述 不能为空!");
+                        $('#apiDesc').focus();
+                        return;
+                    }
+                    else if(!$('#apiKey').val().length){
+                        
+                        swal.showInputError("路由地址 不能为空!");
+                        $('#apiKey').focus();
+                        return;
+                    }
+                    else if(!$('#jsonValue').val().length){
+                        
+                        swal.showInputError("API输出 不能为空!");
+                        $('#jsonValue').focus();
+                        return;
+                    }
+                    else if($('#jsonValue').val().length){
+                        try{
+                            JSON.parse($('#jsonValue').val())
+                        }
+                        catch(e){
+                            swal.showInputError("API输出 的Json格式不对!");
+                            $('#jsonValue').focus();
+                            return;
+                        }
+                    }
+                    
+
+                    $.ajax({
+                        url: "/api/info",
+                        data: business.getApiValue(),
+                        type: "POST",
+                        success: function (msg) {
+                            if(msg.success){
+                                $('#jsonValue').hide()
+                                $('#apiMethod').hide().prev().hide();
+                                business.initApiList()
+                                swal({
+                                    title: msg.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('error',msg)
+                        },
+                        complete: function (_request, _status) {
+                            console.log('complete',_request,_status)
+                        }
+                    })
+                   ;
+                },
+                getApiValue:function(){
+                    return {
+                        apiName:$('#apiName').val(),
+                        apiDesc:$('#apiDesc').val(),
+                        apiKey:$('#apiKey').val(),
+                        projectId:$('#projectId').val(),
+                        projectName:$('#projectName').val(),
+                        jsonValue:$('#jsonValue').val(),
+                        id:apiId,
+                        apiMethod:$('#apiMethod').val()
+                    }
+                },
+                getApi:function(id){
+
+                    apiId = id ;
+
+                    $.ajax({
+                        url: "/api/info",
+                        data: {  requestId : id  },
+                        type: "POST",
+                        success: function (msg) {
+                            if( msg ){
+                                swal({
+                                    title: "修改API",
+                                    type: 'input',
+                                    inputPlaceholder:'API名称',
+                                    showCancelButton: true,
+                                    closeOnConfirm: false,
+                                    animation: "slide-from-top"
+                                }, function(inputValue){
+                                    inputValue && 
+                                    business.addApiPost();
+                                });
+
+                                $('#apiName').val(msg.apiName)
+                                $('#apiDesc').val(msg.apiDesc)
+                                $('#apiKey').val(msg.apiKey)
+                                $('#jsonValue').val(msg.jsonValue)
+                                $('#apiMethod').val(msg.apiMethod)
+                            }
+                            
+                        },
+                        error: function (msg) {
+                            console.log('error',msg)
+                        },
+                        complete: function (_request, _status) {
+                            console.log('complete',_request,_status)
+                        }
+                    })
+                },
+                removeValue : function(){
+                    $('#jsonValue').show()
+                    $('#apiMethod').show().prev().show();
+                    $('#apiName').val('')
+                    $('#apiDesc').val('')
+                    $('#apiKey').val('')
+                    $('#jsonValue').val('')
+                    apiId = 0;
+                },
+                initApiList:function(){
+                    $.ajax({
+                        url: "/api/info",
+                        type: "POST",
+                        data: { apiName:$('#apiSearchName').val(),id:-1,projectName:$('#projectName').val() },
+                        success: function (msg) {
+                            $('#tbodys').html('')
+                            if(!msg.data.APIList.length){
+                                var _html='<tr>\
+                                                <td colspan="4" class="center">没有找到相关数据！</td>\
+                                            </tr>'
+                                $('#tbodys').append(_html)
+                            }
+                            else
+                            for(var list of msg.data.APIList){
+                                var _html='<tr>\
+                                                <td><a href=/'+list.projectKey+'/'+list.apiKey+'>'+list.apiName+'</a></td>\
+                                                <td>'+(list.apiMethod == 2 ? 'POST' : 'GET')+'</td>\
+                                                <td>'+list.apiDesc+'</td>\
+                                                <td>/'+list.projectKey+'/'+list.apiKey+'</td>\
+                                                <td><a href="javascript:void(0)" class="modify-api" lang='+list.aid+'>修改</a> <a href="javascript:void(0)" class="delete-api" lang='+list.aid+'>删除</a></td>\
+                                            </tr>'
+                                $('#tbodys').append(_html)
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('error',msg)
+                        },
+                        complete: function (_request, _status) {
+                            console.log('complete',_request,_status)
+                        }
+                    })
+                },
+                confirmDelete:function(id){
+                    if(confirm('确认要删除此API?')){
+                        $.ajax({
+                        url: "/api/info",
+                        type: "POST",
+                        data: { deleteId:id,projectName:$('#projectName').val() },
+                        success: function (msg) {
+                            $('#tbodys').html('')
+                            if(!msg.data.APIList.length){
+                                var _html='<tr>\
+                                                <td colspan="4" class="center">没有找到相关数据！</td>\
+                                            </tr>'
+                                $('#tbodys').append(_html)
+                            }
+                            else 
+                            for(var list of msg.data.APIList){
+                                var _html='<tr>\
+                                                <td><a href=/'+list.projectKey+'/'+list.apiKey+'>'+list.apiName+'</a></td>\
+                                                <td>'+list.apiDesc+'</td>\
+                                                <td>/'+list.projectKey+'/'+list.apiKey+'</td>\
+                                                <td><a href="javascript:void(0)" class="modify-api" lang='+list.aid+'>修改</a> <a href="javascript:void(0)" class="delete-api" lang='+list.aid+'>删除</a></td>\
+                                            </tr>'
+                                $('#tbodys').append(_html)
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('error',msg)
+                        },
+                        complete: function (_request, _status) {
+                            console.log('complete',_request,_status)
+                        }
+                    })
+                    }
+                    else  return false;
+                },
+                updateDoMain:function(id){
+
+                    if(!$('#authDomain').val().length){
+                        swal({
+                            title: '请输入域名',
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                        return false;
+                    }
+
+                    $.ajax({
+                        url: "/api/info",
+                        type: "POST",
+                        data: { updateDoMainId:id,authDomain:''+$('#authDomain').val()+'' },
+                        success: function (msg) {
+                            $('#jsonValue').hide()
+                            $('#apiMethod').hide().prev().hide();
+                            swal({
+                                    title: msg.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            $('#jsonValue').hide()
+                            $('#apiMethod').hide().prev().hide();
+                        },
+                        error: function (msg) {
+                            console.log('error',msg)
+                        },
+                        complete: function (_request, _status) {
+                            console.log('complete',_request,_status)
+                        }
+                    });
+                }
+            }
+        //     $.ajax({
+        //      type : "GET",
+        //      async: false,
+        //      url  : "http://127.0.0.1:8081/machine/tagjsonp",
+        //      dataType : "jsonp",
+        //      jsonp: "callbackparam",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(默认为:callback)
+        //      jsonpCallback:"success_jsonpCallback",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
+        //      success : function(json){
+        //          alert(json);
+        //          alert(json[0].name);
+        //      },
+        //      error:function(){
+        //          alert('fail');
+        //      }
+        //  });
+
+        //     $.ajax({
+        //      type : "POST",
+        //      async: false,
+        //      url  : "/shield/api/secIndex",
+        //      dataType : "json",
+        //      success : function(json){
+        //          alert(json);
+        //         //  alert(json[0].name);
+        //      },
+        //      error:function(){
+        //         //  alert('fail');
+        //      }
+        //  });
+        </script>
+        
+
+{{include './footer/index'}}

@@ -1,0 +1,35 @@
+{{include './header/index'}}
+
+    
+    <h1>{{title}}</h1><hr/>
+
+    {{each products as product i}}
+        <p>{{product.businessName}}</p>
+        <ul class="flex">
+            {{each projects[i] as project}}
+                <li><a href={{project.projectKey}} >{{project.projectName}}</a></li>
+            {{/each}}
+        </ul>
+    {{/each}}
+
+    <!--<div id="element"></div>
+    <input id="foo" type="range"/>-->
+    <script>
+        // var element = document.getElementById('element');
+        // // 创建shadow DOM子树
+        // element.shadow = document.createElement('div');
+        // element.shadow.innerHTML = '<h1>Think of the Children</h1>' +
+        //     '<div class="children"></div>';
+        // // Now add some children.
+        // var test = element.appendChild(document.createElement('p'));
+        // test.textContent = 'I see the light!';
+
+        // Create an element with a shadow DOM subtree.
+        // var input = document.body.appendChild(document.createElement('input'));
+        // Add a child to it.
+        // var test = input.appendChild(document.createElement('p'));
+        // .. with some text.
+        // test.textContent = 'Team Edward';
+    </script>
+
+{{include './footer/index'}}

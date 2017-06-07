@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>{{title}}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <script src="/javascript/jquery/jquery-3.2.1.min.js"></script>
+    <script src="/javascript/artTemplate/artTemplate3.js"></script>
+    <script src="/javascript/sweet/sweetalert-dev.js"></script>
+    <link rel="stylesheet" href="/javascript/sweet/sweetalert.css">
+</head>
+<body>
+    <style>
+        *{padding:0;margin:0}
+        body{
+            padding: 10px;
+        }
+        .flex{ width: 100%;font: 14px Arial;
+            display: -webkit-flex;-webkit-flex-direction: row;
+            display: flex;flex-direction: row;
+            flex-wrap:wrap;
+        }
+        .flex > li {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 64px;
+            height:64px;
+            text-align:center;
+            list-style: none;
+            border:1px #cecece solid;
+            margin:10px;
+        }
+        li > a {
+            height:64px;
+            line-height:64px;
+        }
+</style>
