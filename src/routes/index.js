@@ -30,22 +30,20 @@ router.get('/init', initCtrl)
 router.get('/shield', shieldCtrl)
 router.get('/userImages', userImagesCtrl)
 router.get('/goods', goodsCtrl)
-
 router.post('/api/info', machineApiCtrl)
 
 // -------------------------
 // get post business api
 // -------------------------
-var api = async function(){
-    var ret     = await redisUtil().get('APIList_POST'),
-        ret     = JSON.parse(ret);
 
-    for(var api of ret){
+module.exports = function(ctx, next){
+
+    var _json = JSON.parse(ctx.redis.apiPostList)
+    for(var api of _json){
         router.post('/'+api.projectKey+'/'+api.apiKey, async function(ctx,next){
             ctx.body = JSON.parse(api.jsonValue)
         })
     }
-}
-api();
 
-module.exports = router
+    return router.routes()(ctx, next)
+}

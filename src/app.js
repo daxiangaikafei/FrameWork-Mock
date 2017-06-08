@@ -74,7 +74,8 @@ app.use(Cors({
 // -------------------------
 app.use(async (ctx, next) => {
   // const router = await require('./routes')(ctx)
-  await await require('./routes').routes()(ctx, next)
+  // await require('./routes').routes()(ctx, next)
+  await require('./routes')(ctx, next)
 })
 
 // -------------------------

@@ -75,13 +75,23 @@ module.exports = function(options){
 
     return async (ctx , next) => {
 
-      let proList   = await getCache('ProjectList')
+      let proList     = await getCache('ProjectList')
+      let apiPostList = await getCache('APIList_POST')
+
+    // for(var api of ret){
+    //     _router.post('/'+api.projectKey+'/'+api.apiKey, async function(ctx,next){
+    //         console.log('0:POST')
+    //         ctx.body = JSON.parse(api.jsonValue)
+    //     })
+    // }
+
 
       ctx.redis = {
           get : getCache,
           set : setCache,
           del : delCache,
-          proList :proList
+          proList :proList,
+          apiPostList :apiPostList
       }
       await next()
     }

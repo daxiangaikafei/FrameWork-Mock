@@ -90,6 +90,7 @@ module.exports = function(option){
 
                                 if(ctx.method = 'POST' ){
                                     ctx.body = returnObj
+                                    console.log('1:POST')
                                 }
                                 else if(ctx.method = 'GET' ){
                                     ctx.body = returnObj
