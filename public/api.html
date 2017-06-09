@@ -28,6 +28,34 @@
             margin: 0px 10px;
             width: 200px;
         }
+        .show-input input[type=checkbox] {
+            display: inline;
+            width: 50px;
+            height: 16px;
+            box-shadow: none;
+            margin: 0px 0;
+        }
+        .show-input input[type=number] {
+            display: inline;
+            width: 85px;
+            height: 30px;
+            margin: 0;
+            font-size: 16px;
+        }
+        .sweet-alert textarea {
+            height: 200px;
+            font-size: 14px;
+        }
+        .sweet-alert {
+            width: 600px;
+        }
+        .sweet-alert select {
+            width: 100px;
+        }
+        .field {
+            text-align:left;
+            margin:10px;
+        }
     </style>
     
         <h1>{{title}}</h1><hr/>
@@ -35,10 +63,10 @@
         请输入您要绑定的调试域名: <input type="text" id='authDomain' value="{{authDomain}}"/><button id="setBtn" lang="{{projectId}}">设置</button>（调试时请设置对应的host,浏览器无需设置跨域模式）　<br/>　<hr/>
         <table cellspacing="0" cellpadding="0">
             <thead>
-                <th style="width:100px;">api名称</th>
+                <th style="width:150px;">api名称</th>
                 <th style="width:100px;">请求方式</th>
                 <th style="width:200px;">描述</th>
-                <th style="width:200px;">路由地址</th>
+                <th style="min-width:200px;">路由地址</th>
                 <th style="width:100px;">操作</th>
             </thead>
             <tbody id='tbodys'>
@@ -147,6 +175,7 @@
                             if(msg.success){
                                 $('#jsonValue').hide()
                                 $('#apiMethod').hide().prev().hide();
+                                $('.field span').hide()
                                 business.initApiList()
                                 swal({
                                     title: msg.message,
@@ -165,13 +194,19 @@
                    ;
                 },
                 getApiValue:function(){
+                    let jsonValue =  $('#jsonValue').val()
+                    let _option = {
+                        isDynamic: $('#isDynamic').prop('checked'),
+                        num: $('#num').val()
+                    }
+                    jsonValue += '##option##'+JSON.stringify(_option)
                     return {
                         apiName:$('#apiName').val(),
                         apiDesc:$('#apiDesc').val(),
                         apiKey:$('#apiKey').val(),
                         projectId:$('#projectId').val(),
                         projectName:$('#projectName').val(),
-                        jsonValue:$('#jsonValue').val(),
+                        jsonValue:jsonValue,
                         id:apiId,
                         apiMethod:$('#apiMethod').val()
                     }
@@ -197,11 +232,18 @@
                                     inputValue && 
                                     business.addApiPost();
                                 });
-
+                                let option = msg.jsonValue.split('##option##')
+                                let _option = undefined
+                                if (option[1]) {
+                                    _option = JSON.parse(option[1])
+                                } 
+                                console.log(_option)
                                 $('#apiName').val(msg.apiName)
                                 $('#apiDesc').val(msg.apiDesc)
                                 $('#apiKey').val(msg.apiKey)
-                                $('#jsonValue').val(msg.jsonValue)
+                                $('#isDynamic').prop('checked',_option ? _option.isDynamic : false)
+                                $('#num').val(_option ? _option.num : '')
+                                $('#jsonValue').val(option[0])
                                 $('#apiMethod').val(msg.apiMethod)
                             }
                             
@@ -217,9 +259,12 @@
                 removeValue : function(){
                     $('#jsonValue').show()
                     $('#apiMethod').show().prev().show();
+                    $('.field span').show()                    
                     $('#apiName').val('')
                     $('#apiDesc').val('')
                     $('#apiKey').val('')
+                    $('#isDynamic').prop('checked', false)
+                    $('#num').val('')
                     $('#jsonValue').val('')
                     apiId = 0;
                 },
@@ -309,6 +354,7 @@
                         success: function (msg) {
                             $('#jsonValue').hide()
                             $('#apiMethod').hide().prev().hide();
+                            $('.field span').hide()
                             swal({
                                     title: msg.message,
                                     timer: 1500,
@@ -316,6 +362,7 @@
                                 });
                             $('#jsonValue').hide()
                             $('#apiMethod').hide().prev().hide();
+                            $('.field span').hide()
                         },
                         error: function (msg) {
                             console.log('error',msg)

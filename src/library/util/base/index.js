@@ -32,6 +32,8 @@ module.exports = function(option){
                 else{
                     var apiListKey = 'APIList',
                         apiList    = await ctx.redis.get(apiListKey),
+                        jsonValueArr = [],
+                        jsonOption = {},
                         returnObj  = {},
                         exist      = false;
                     if( apiList ){
@@ -51,8 +53,10 @@ module.exports = function(option){
 
                                 if( APIKeyList && APIKeyList.length ){
 
-                                    APIKeyList[0].jsonValue.length &&
-                                   (returnObj = JSON.parse(APIKeyList[0].jsonValue))
+                                    APIKeyList[0].jsonValue.length && 
+                                   (jsonValueArr = APIKeyList[0].jsonValue.split('##option##')) &&
+                                   (returnObj = JSON.parse(jsonValueArr[0])) &&
+                                   (jsonOption = jsonValueArr[1] ? JSON.parse(jsonValueArr[1]) : {})
                                 }
 
                                 exist = true;
@@ -61,7 +65,7 @@ module.exports = function(option){
                         }
 
                         console.log('_url',exist,_jsonpP)
-
+                        
                         if(exist){
 
 // console.log('ctx',ctx);
@@ -87,7 +91,8 @@ module.exports = function(option){
                             else {
                                 ctx.status  = 200
                                 
-
+                                const { getMock } = await require(path.resolve(__dirname,'../../../mock/index.js'))
+                                returnObj = getMock(returnObj, jsonOption)
                                 if(ctx.method = 'POST' ){
                                     ctx.body = returnObj
                                     console.log('1:POST')
@@ -95,7 +100,7 @@ module.exports = function(option){
                                 else if(ctx.method = 'GET' ){
                                     ctx.body = returnObj
                                     // ctx.json
-                                }
+                                }          
                             }  
                         }
                         else await next()
