@@ -35,9 +35,9 @@
             box-shadow: none;
             margin: 0px 0;
         }
-        .show-input input[type=number] {
+        #loops {
             display: inline;
-            width: 85px;
+            width: 75%;
             height: 30px;
             margin: 0;
             font-size: 16px;
@@ -111,6 +111,15 @@
                     else if(e.target.id == 'setBtn'){
                         business.updateDoMain(e.target.getAttribute('lang'))
                     }
+                    else if(e.target.id == 'isDynamic'){
+                        let option = $(e.target).parent().next()
+                        if($(e.target).prop('checked')) {
+                            option.slideDown()
+                        } else {
+                            option.slideUp()
+                        }
+                        business.getApi(e.target.getAttribute('lang'))
+                    }
                         
             });
 
@@ -175,7 +184,7 @@
                             if(msg.success){
                                 $('#jsonValue').hide()
                                 $('#apiMethod').hide().prev().hide();
-                                $('.field span').hide()
+                                $('.field').hide()
                                 business.initApiList()
                                 swal({
                                     title: msg.message,
@@ -194,10 +203,22 @@
                    ;
                 },
                 getApiValue:function(){
-                    let jsonValue =  $('#jsonValue').val()
+                    let jsonValue =  $('#jsonValue').val(),
+                        loops = $('#loops').val()
+                    if (loops.indexOf(':')>0) {
+                        let loopsArr = loops.split(',')
+                        loops = []
+                        loopsArr.forEach(item => {
+                            let temp = item.split(':')
+                            loops.push({
+                                key: temp[0],
+                                num: temp[1]
+                            })
+                        })
+                    }
                     let _option = {
                         isDynamic: $('#isDynamic').prop('checked'),
-                        num: $('#num').val()
+                        loops
                     }
                     jsonValue += '##option##'+JSON.stringify(_option)
                     return {
@@ -237,12 +258,19 @@
                                 if (option[1]) {
                                     _option = JSON.parse(option[1])
                                 } 
-                                console.log(_option)
+                                let loops
+                                if(_option && Array.isArray(_option.loops)) {
+                                    loops = _option.loops.map(item => {
+                                        return `${item.key}:${item.num}`
+                                    }).join(',')
+                                } else if (_option) {
+                                    loops = _option.loops
+                                }
                                 $('#apiName').val(msg.apiName)
                                 $('#apiDesc').val(msg.apiDesc)
                                 $('#apiKey').val(msg.apiKey)
                                 $('#isDynamic').prop('checked',_option ? _option.isDynamic : false)
-                                $('#num').val(_option ? _option.num : '')
+                                $('#loops').val(loops)
                                 $('#jsonValue').val(option[0])
                                 $('#apiMethod').val(msg.apiMethod)
                             }
@@ -259,12 +287,12 @@
                 removeValue : function(){
                     $('#jsonValue').show()
                     $('#apiMethod').show().prev().show();
-                    $('.field span').show()                    
+                    $('.field').show()                    
                     $('#apiName').val('')
                     $('#apiDesc').val('')
                     $('#apiKey').val('')
                     $('#isDynamic').prop('checked', false)
-                    $('#num').val('')
+                    $('#loops').val('')
                     $('#jsonValue').val('')
                     apiId = 0;
                 },
@@ -354,7 +382,7 @@
                         success: function (msg) {
                             $('#jsonValue').hide()
                             $('#apiMethod').hide().prev().hide();
-                            $('.field span').hide()
+                            $('.field').hide()
                             swal({
                                     title: msg.message,
                                     timer: 1500,
@@ -362,7 +390,7 @@
                                 });
                             $('#jsonValue').hide()
                             $('#apiMethod').hide().prev().hide();
-                            $('.field span').hide()
+                            $('.field').hide()
                         },
                         error: function (msg) {
                             console.log('error',msg)

@@ -3,7 +3,7 @@ import Mock from 'mockjs'
 let count = 0, regCount = 0
 
 function checkReg(obj) {
-  if (regCount++ > 10) return
+  if (regCount++ > 100) return
   for (let key in obj) {
     if (/^\/.*\/i?g?m?/ig.test(obj[key])) {
       let arr = (obj[key]+'').split('/')
@@ -34,7 +34,7 @@ function setListIntoData(data, loop) {
     }
     data[loop.key] = list
   } else {
-    if (count++ > 10) return
+    if (count++ > 100) return
     for (let key in data) {
       if (typeof data[key] === 'object' && typeof data[key] !== 'function') {
         setListIntoData(data[key], loop)
@@ -51,35 +51,21 @@ export function getMock(json, option) {
     data: {
     }
   }
-  const loops = option.loops || []
   if (option.isDynamic) {
-    // if (option.num !== '' && option.num>=0) {
-    //   const num = option.num    
-    //   const list = [];
-    //   for (let i = 0; i < num; i++) {
-    //     for (let key in json.data) {
-    //       json.data[key] = checkReg(json.data[key])
-    //     }
-    //     list.push(Mock.mock(json.data));
-    //   }
-    //   json.data = list
-    // } else {
-    //   for (let key in json.data) {
-    //     json.data[key] = checkReg(json.data[key])
-    //   }
-    //   json.data = Mock.mock(json.data)
-    // }
-
-    if (loops.length > 0) {
+    const loops = option.loops || [] 
+    if (!Array.isArray(loops) && loops !== '' && loops>=0) {
+      const num = loops    
+      const list = [];
+      for (let i = 0; i < num; i++) {
+        list.push(Mock.mock(checkReg(json.data)));
+      }      
+      json.data = list
+    } else if (Array.isArray(loops) && loops.length > 0) {
       loops.forEach(item => {
         setListIntoData(json.data, item)
       })
     } 
-    // else {
-    //   for (let key in json.data) {
-    //     json.data[key] = checkReg(json.data[key])
-    //   }
-    // }
+
     json.data = Mock.mock(checkReg(json.data))
   }
   return json
