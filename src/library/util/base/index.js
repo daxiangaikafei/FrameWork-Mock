@@ -75,6 +75,7 @@ module.exports = function(option){
 //                             ctx.request.header("X-Powered-By",' 3.2.1')
 
 
+// console.log('returnObj',returnObj);
                             if(_jsonpP){
 
                                 var _backFun = ''

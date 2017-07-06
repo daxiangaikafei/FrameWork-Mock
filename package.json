@@ -9,7 +9,8 @@
     "product": "better-npm-run production",
     "clear": "rm -rf dist/",
     "compile-test": "npm run clear && better-npm-run compile-test",
-    "compile": "npm run clear && babel src/ --out-dir dist/ --retain-lines --source-maps"
+    "compile": "npm run clear && babel src/ --out-dir dist/ --retain-lines --source-maps",
+    "testProject":"node test/index"
   },
   "betterScripts": {
     "dev": {
@@ -59,6 +60,7 @@
     "pm2": "^2.4.5",
     "raven": "^1.2.1",
     "redis": "^2.6.5",
+    "supertest": "^3.0.0",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
