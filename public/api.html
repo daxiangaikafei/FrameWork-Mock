@@ -70,7 +70,8 @@
 </style>
 
 <h1>{{title}}</h1>
-<hr/> 请输入您要搜索的接口名称: <input type="text" id='apiSearchName' /><button id="searchBtn">搜索API</button><button id='addApi'>添加API</button>　<br/>请输入您要绑定的调试域名: <input type="text" id='authDomain' value="{{authDomain}}" /><button id="setBtn" lang="{{projectId}}">设置</button>（调试时请设置对应的host,浏览器无需设置跨域模式）　<br/>
+<hr/> 请输入您要搜索的接口名称: <input type="text" id='apiSearchName' /><button id="searchBtn">搜索API</button><button id='addApi'>添加API</button>　<br/>请输入您要绑定的调试域名:
+<input type="text" id='authDomain' value="{{authDomain}}" /><button id="setBtn" lang="{{projectId}}">设置</button>（调试时请设置对应的host,浏览器无需设置跨域模式）　<br/>
 <hr/>
 <table cellspacing="0" cellpadding="0">
     <thead>
@@ -251,7 +252,7 @@
                     url: "/api/info",
                     data: { requestId: id },
                     type: "POST",
-                    success: function (msg,_state,_response) {
+                    success: function (msg, _state, _response) {
                         if (msg) {
                             swal({
                                 title: "修改API",
@@ -412,36 +413,37 @@
                 });
             }
         }
-        //     $.ajax({
-        //      type : "GET",
-        //      async: false,
-        //      url  : "http://127.0.0.1:8081/machine/tagjsonp",
-        //      dataType : "jsonp",
-        //      jsonp: "callbackparam",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(默认为:callback)
-        //      jsonpCallback:"success_jsonpCallback",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
-        //      success : function(json){
-        //          alert(json);
-        //          alert(json[0].name);
-        //      },
-        //      error:function(){
-        //          alert('fail');
-        //      }
-        //  });
+    //     $.ajax({
+    //      type : "GET",
+    //      async: false,
+    //      url  : "http://127.0.0.1:8081/machine/tagjsonp",
+    //      dataType : "jsonp",
+    //      jsonp: "callbackparam",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(默认为:callback)
+    //      jsonpCallback:"success_jsonpCallback",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
+    //      success : function(json){
+    //          alert(json);
+    //          alert(json[0].name);
+    //      },
+    //      error:function(){
+    //          alert('fail');
+    //      }
+    //  });
 
-        //     $.ajax({
-        //      type : "POST",
-        //      async: false,
-        //      url  : "http://127.0.0.1:8081/risks/api/risk/user/login",
-        //      dataType : "json",
-        //      success : function(json){
-        //         //  debugger;
-        //         //  alert(json,arguments);
-        //         //  alert(json[0].name);
-        //      },
-        //      error:function(){
-        //         //  alert('fail');
-        //      }
-        //  });
+    // $.ajax({
+    //     type: "POST",
+    //     async: false,
+    //     url: "http://127.0.0.1:8081/risks/api/risk/user/login",
+    //     dataType: "json",
+    //     success: function (json) {
+    //         //  debugger;
+    //         //  alert(json,arguments);
+    //         //  alert(json[0].name);
+    //     },
+    //     error: function () {
+    //         //  alert('fail');
+    //     }
+    // });
+
 </script>
 
 

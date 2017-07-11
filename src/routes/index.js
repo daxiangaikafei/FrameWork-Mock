@@ -34,25 +34,65 @@ router.get('/goods', goodsCtrl)
 router.get('/risks', risksCtrl)
 router.post('/api/info', machineApiCtrl)
 
+
+// -------------------------
+// get post business api util
+// -------------------------
+var postUtil = function (opt) {
+    Object.assign(this, opt);
+}
+postUtil.prototype = {
+    constructor: this,
+    filterTarget: function (_api, _actualUrl) {
+        return _api.filter(function (_item) {
+            return '/' + _item.projectKey + '/' + _item.apiKey == _actualUrl
+        })
+    }
+}
+
 // -------------------------
 // get post business api
 // -------------------------
-
 module.exports = function (ctx, next) {
 
-    var _json = JSON.parse(ctx.redis.apiPostList)
-    for (var api of _json) {
+    //para init 
+    var _postUtil = new postUtil(),
+        _json = JSON.parse(ctx.redis.apiPostList),
+        api = _postUtil.filterTarget(_json, ctx.request.url);
+
+    if (api && api.length) {
+        api = api[0];
+
+        // this is a function ,care the closet function using 
         router.post('/' + api.projectKey + '/' + api.apiKey, async function (ctx, next) {
-            
-            var _result = api.jsonValue.match(/##option.+/)
-            if (_result) {
-                api.jsonValue = api.jsonValue.replace(/##option.+/g, '')
-                var returnValue = JSON.parse(api.jsonValue);
-                // returnValue.option = JSON.parse(_result[0].replace('##option##', ''));
-                ctx.body = returnValue;
-                ctx.set('option', _result[0].replace('##option##', ''));
+
+            var _jsonList = JSON.parse(ctx.redis.apiPostList),
+                _jsonTarget = _postUtil.filterTarget(_jsonList, ctx.request.url);
+
+            //  find the target api
+            if (_jsonTarget) {
+                _jsonTarget = _jsonTarget[0];
+
+                // get the the jsonValue by regular
+                var _result = _jsonTarget.jsonValue.match(/##option.+/)
+                if (_result) {
+
+                    // filter the option ,and then response the value 
+                    var returnValue = JSON.parse(_jsonTarget.jsonValue.replace(/##option.+/g, ''));
+                    ctx.body = returnValue;
+                    ctx.set('option', _result[0].replace('##option##', ''));
+
+                }
+                else ctx.body = JSON.parse(_jsonTarget.jsonValue)
             }
-            else ctx.body = JSON.parse(api.jsonValue)
+            else {
+                ctx.body = {
+                    code: -9999,
+                    msg: '路由: ' + ctx.request.url + ' 不存在',
+                    data: null
+                }
+            }
+
         })
     }
 

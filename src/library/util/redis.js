@@ -78,6 +78,9 @@ module.exports = function(options){
       let proList     = await getCache('ProjectList')
       let apiPostList = await getCache('APIList_POST')
 
+      // console.log('------------------------------------apiPostList',apiPostList)
+      
+
     // for(var api of ret){
     //     _router.post('/'+api.projectKey+'/'+api.apiKey, async function(ctx,next){
     //         console.log('0:POST')
@@ -93,6 +96,10 @@ module.exports = function(options){
           proList :proList,
           apiPostList :apiPostList
       }
+
+      // if(ctx.redis&& ctx.redis.apiPostList){
+      //     console.log('------------------------------------ctx',ctx.redis.apiPostList)
+      // }
       await next()
     }
 }
