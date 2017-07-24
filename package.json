@@ -8,9 +8,9 @@
     "test": "better-npm-run test",
     "product": "better-npm-run production",
     "clear": "rm -rf dist/",
-    "compile-test": "npm run clear && better-npm-run compile-test",
-    "compile": "npm run clear && babel src/ --out-dir dist/ --retain-lines --source-maps",
-    "testProject":"node test/index"
+    "clearTest": "rm -rf distTest/",
+    "compile-test": "npm run clearTest && babel test/ --out-dir distTest/ --retain-lines --source-maps",
+    "compile": "npm run clear && babel src/ --out-dir dist/ --retain-lines --source-maps"
   },
   "betterScripts": {
     "dev": {
@@ -21,6 +21,12 @@
     },
     "debug": {
       "command": "node -r dotenv/config --nolazy --debug-brk=5858 bin/index",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "test": {
+      "command": "node -r dotenv/config --nolazy --debug-brk=5858 distTest/index",
       "env": {
         "NODE_ENV": "development"
       }

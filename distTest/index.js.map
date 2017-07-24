@@ -1,0 +1,1 @@
+{"version":3,"sources":["../test/index.js"],"names":["console","log","describe"],"mappings":"cAAA;;;AAGAA,QAAQC,GAAR,CAAY,KAAZ;AACAC,SAAS,eAAT,EAA0B,YAAM;AAC5BF,YAAQC,GAAR,CAAY,gBAAZ;AACH,CAFD","file":"index.js","sourcesContent":["// import request from 'supertest'\n\n\nconsole.log('222');\ndescribe('HTTP APP TEST', () => {\n    console.log('this is a test')\n})"]}

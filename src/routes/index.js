@@ -13,6 +13,7 @@ import shieldCtrl from '../controllers/shield'
 import userImagesCtrl from '../controllers/userImages'
 import goodsCtrl from '../controllers/goods'
 import risksCtrl from '../controllers/risks'
+import onedayCtrl from '../controllers/oneday'
 import redisUtil from 'lib/redisUtil'
 // -------------------------
 // router instance 
@@ -32,6 +33,7 @@ router.get('/shield', shieldCtrl)
 router.get('/userImages', userImagesCtrl)
 router.get('/goods', goodsCtrl)
 router.get('/risks', risksCtrl)
+router.get('/oneday', onedayCtrl)
 router.post('/api/info', machineApiCtrl)
 
 
