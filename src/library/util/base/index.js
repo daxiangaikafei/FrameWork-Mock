@@ -45,8 +45,9 @@ module.exports = function(option){
                             _jsonpP = _jsonp && _jsonp.indexOf('callbackparam')> -1  ? _jsonp.split('&') : null ;
 
                         for(var api of apiList){
-
-                            if( _url == '/' + api.projectKey + '/' + api.apiKey && api.apiMethod == 1){
+                            let isRest = /:id/i.test(api.apiKey) && _url.indexOf(api.apiKey.replace(/\/:id/i,'')) >= 0
+                            
+                            if( (isRest || _url == '/' + api.projectKey + '/' + api.apiKey) && api.apiMethod == 1){
                                 
                                 var getAPIKeySQL = "select * from apiKey where apiId = " + api.aid ,
                                     APIKeyList   = await ctx.mysql.query(getAPIKeySQL)
