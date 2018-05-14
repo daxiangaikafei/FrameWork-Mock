@@ -25,7 +25,7 @@ module.exports = {
       cashier: {
         git: 'git@gitlab.tuhu.cn:finance/payment/THCashier.git',
         sub: 'Cashier',
-        mail: 'xiaolin@tuhu.cn'
+        mail: 'xiaolin@tuhu.cn,wangguan@tuhu.cn'
       }
     }
   }
