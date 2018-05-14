@@ -36,6 +36,7 @@ module.exports = function(option){
                         jsonOption = {},
                         returnObj  = {},
                         exist      = false;
+
                     if( apiList ){
                         apiList = JSON.parse(apiList)
 
@@ -64,19 +65,11 @@ module.exports = function(option){
                                 break;
                             }
                         }
-
-                        console.log('_url',exist,_jsonpP)
+                        
                         
                         if(exist){
 
-// console.log('ctx',ctx);
-//                             ctx.request.header("Access-Control-Allow-Origin", "*");
-//                             ctx.request.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
-//                             ctx.request.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-//                             ctx.request.header("X-Powered-By",' 3.2.1')
-
-
-// console.log('returnObj',returnObj);
+                            
                             if(_jsonpP){
 
                                 var _backFun = ''

@@ -17,16 +17,16 @@ module.exports = async (ctx, next) => {
     // -------------------------
     // business const
     // -------------------------
-    var projectId      = 7
+    var projectId      = 11
     var Get_ProjectAPI = "select a.id aid,apiName,apiDesc,apiKey,apiMethod,p.projectName,p.projectKey,p.id as pid from api a left join project p on a.projectId = p.id where p.id = %s"
-    var Get_Project = "select projectName,authDomain,projectKey,id from project where id = %s"
+    var Get_Project = "select projectName,authDomain,projectKey,a.id,businessName from project a , business b  where a.id = %s and a.businessId=b.id"
     // -------------------------
     // project gettings
     // -------------------------
     var APIList = await ctx.mysql.query(util.format(Get_ProjectAPI,projectId));
     var Project = await ctx.mysql.query(util.format(Get_Project,projectId));
      ctx.body = ctx.render('api',{
-         title:(Project.length?Project[0].projectName:'')+' | API列表',
+         title: (Project.length ? Project[0].businessName + ' - ' + Project[0].projectName : '') + ' | API列表',
          projectName : Project.length?Project[0].projectName:'',
          authDomain:Project.length?Project[0].authDomain:'',
          projectId,

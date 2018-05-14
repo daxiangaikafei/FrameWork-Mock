@@ -49,6 +49,9 @@ module.exports = function(options){
                 if(err){  
                     reject(err);  
                 }else{  
+
+                    console.log('INSERT INTO '+ table +' SET ?',option)
+
                     conn.query('INSERT INTO '+ table +' SET ?',option,function(err,results,fields){  
                         //释放连接  
                         conn.release();  

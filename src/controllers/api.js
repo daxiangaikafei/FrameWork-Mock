@@ -101,6 +101,8 @@ module.exports = async (ctx, next) => {
             if (apiResult && apiResult.insertId) {
                 apiKey.apiId = apiResult.insertId
 
+                console.log('apiResult.insertId',apiKey.apiId);
+
                 var apiKeyResult = await ctx.mysql.insert('apiKey', apiKey);
                 if (apiKeyResult && apiKeyResult.insertId) {
 

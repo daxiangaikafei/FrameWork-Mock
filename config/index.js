@@ -24,7 +24,7 @@ const config = {
     // ------------------------------
     // Server Configuration
     // ------------------------------ 
-    server_host : process.env.NODE_ENV === 'development' ? '127.0.0.1' : '192.168.132.42',
+    server_host : process.env.NODE_ENV === 'development' ? '127.0.0.1' : '172.16.20.56',
     server_port : process.env.NODE_ENV === 'development' ? process.env.port || 8081 : 8081
 }
 

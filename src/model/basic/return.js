@@ -39,11 +39,11 @@ module.exports = function(options){
     })
 
     /**
-     * set message when condition
+     * set message when condition + process.env.NODE_ENV
      */
     Object.defineProperty(ret,'message', {
         get          : function(){
-            return _code == 404 ? cst.error._404 + process.env.NODE_ENV : _message
+            return _code == 404 ? cst.error._404  : _message
         },
         set          : function(_newMessage){
             _message = _newMessage 

@@ -52,7 +52,8 @@ app.use(Cors({
       }
     }
     
-    if (schema.length) {
+    if (schema.length && ctx.redis.proList) {
+      
       var proList = JSON.parse(ctx.redis.proList);
       for (var j = 0; j < proList.length; j++) {
         if (schema == proList[j].projectKey) {
