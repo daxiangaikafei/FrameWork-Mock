@@ -23,8 +23,8 @@ module.exports = {
     publish: '/root/publish',
     biz: {
       cashier: {
-        git: 'git@gitlab.tuhu.cn:finance/payment/THCashier.git',
-        sub: 'Cashier',
+        git: 'git@gitlab.tuhu.cn:finance/H5/Pay.git',
+        sub: '',
         mail: 'xiaolin@tuhu.cn,wangguan@tuhu.cn'
       }
     }
