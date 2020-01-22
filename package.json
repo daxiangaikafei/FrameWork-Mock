@@ -5,7 +5,7 @@
   "scripts": {
     "start": "better-npm-run dev",
     "debug": "better-npm-run debug",
-    "test": "make test",
+    "test": "better-npm-run test",
     "product": "better-npm-run production",
     "clear": "rm -rf dist/",
     "clearTest": "rm -rf distTest/",
